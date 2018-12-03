@@ -9,7 +9,7 @@
                 <input type='radio' v-bind:id="'mv-cat-radio-' + index" v-model="checkedCategory"><label class="mv-cat-radio" v-bind:for="'mv-cat-radio-' + index">{{ value }} : {{index}}</label>
             </div> -->
             <label class="mv-cat-radio" v-for="(value, index) in categories">
-                <input type='radio' nmae="mv-cat-radio" v-bind:id="'mv-cat-radio-' + index" v-model="checkedCategory" v-bind:value="value">{{ value }} : {{index}}
+                <input type='radio' nmae="mv-cat-radio" v-bind:id="'mv-cat-radio-' + index" v-model="checkedCategory" v-bind:value="value"><span>{{ value }}</span>
             </label>
             <div>{{checkedCategory}}</div>
             <div class="flex-container">
@@ -39,7 +39,7 @@
                 errorMsg: '',
                 endpoint: 'https://a98b1f23-6c84-4dfa-b054-b59188510552.mock.pstmn.io/booksList',
                 books: [],
-                checkedCategory: '',
+                checkedCategory: [],
                 FindCondition: ''
             }
         },
@@ -118,14 +118,17 @@
     }
 </script>
 <style scoped>
-    label.mv-cat-radio {
-        background-color: #C0CA33;
+    label.mv-cat-radio span{
+        background-color: #ccc;
         color: #fff;
         padding: 5px 20px;
         border: none;
         border-radius: 10px;
         margin: 10px 3px;
         display: inline-block;
+    }
+    .mv-cat-radio input:checked + span { //выделенная категория
+        background-color: #ae6ab0;
     }
     .mv-cat-radio input {
         display: none;
