@@ -127,7 +127,7 @@
         margin: 10px 3px;
         display: inline-block;
     }
-    .mv-cat-radio input:checked + span { //выделенная категория
+    .mv-cat-radio input:checked + span { /* выделенная категория */
         background-color: #ae6ab0;
     }
     .mv-cat-radio input {
