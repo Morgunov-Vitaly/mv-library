@@ -14,7 +14,7 @@ Vue.use(VueResource); //Подключаем плагин для работы с
 /* Создаем экземпляр объекта */
 var router = new VueRouter({
     routes: [
-        {path: '/library', component: Library},
+        {path: '/', component: Library},
         {path: '/book/:id', name: 'book', component: Book}
     ]
 });

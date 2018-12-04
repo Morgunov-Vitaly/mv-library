@@ -2,11 +2,11 @@
     <div class="filter-container">
         <p class="catHeader">Рубрики:</p>
         <label class="mv-cat-checkbox" v-for="(key, value, index) in categories">
-            <input type="checkbox" v-bind:id="'mv-mv-cat-checkbox-' + index" v-model="checkedCategory" v-bind:value="value"><span>{{ value }} <i class="mv-qty">{{key}}</i></span>
+            <input type="checkbox" v-bind:id="'mv-mv-cat-checkbox-' + index" v-model="checkedCategories" v-bind:value="value" @change="filterCatDone"><span>{{ value }} <i class="mv-qty">{{key}}</i></span>
         </label>
         <p class="typeHeader">Тип носителя:</p>
         <label class="mv-type-checkbox" v-for="(key,value,index) in bookTypes">
-            <input type="checkbox" v-bind:id="'mv-mv-type-checkbox-' + index" v-model="checkedType" v-bind:value="value"><span>{{ value }} <i class="mv-qty">{{key}}</i></span>
+            <input type="checkbox" v-bind:id="'mv-mv-type-checkbox-' + index" v-model="checkedTypes" v-bind:value="value" @change="filterTypesDone"><span>{{ value }} <i class="mv-qty">{{key}}</i></span>
         </label>
     </div>
 </template>
@@ -18,8 +18,8 @@
         },    
         data() {
             return {
-                checkedCategory: [],
-                checkedType: [] 
+                checkedCategories: [],
+                checkedTypes: [] 
             }
         },
         methods: {            
@@ -29,7 +29,17 @@
                 result[a[key]] = result[a[key]] + 1 || 1;
                 });
                 return result;
-            }
+            },
+            filterCatDone: function() {
+                // генерируем событие 'filter-cat-done' и передаём массив выбранных категорий
+               // console.log('checkedCategories'); console.log(this.checkedCategories);
+                this.$emit('filter-cat-done', this.checkedCategories);
+            },
+            filterTypesDone: function() {
+                // генерируем событие 'filter-types-done' и передаём массив выбранных типов
+               // console.log('checkedTypes'); console.log(this.checkedTypes);
+                this.$emit('filter-types-done', this.checkedTypes);
+            }            
         },
         computed: {
             categories: function () {
@@ -125,10 +135,12 @@
     */
     .catHeader,
     .typeHeader{
-        color: #ccc;
-        font-size: 22px;
-        font-weight: 200;
+        color: #797979;
+        font-size: 18px;
+        font-weight: 100;
+        margin: 10px 0 0;
     }
+
 
     /*
     * Иконки

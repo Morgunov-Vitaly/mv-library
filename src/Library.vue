@@ -11,7 +11,7 @@
             </div>
             <transition name="slide-up">
                 <div class="filter-container" v-if="filterShow">
-                    <filter-box v-bind:filtered-books="filteredBooks"></filter-box>
+                    <filter-box v-bind:filtered-books="filteredBooks" @filter-types-done="filterTypes" @filter-cat-done="filterCat"></filter-box>
                 </div>                
             </transition>
             <div class="flex-container">
@@ -19,14 +19,14 @@
                     <img :src="book.PICTURE" :alt="book.TEXT">
                         <div class="book-id ">{{book.ID}}</div>
                         <div class="book-name">{{book.NAME}}</div>
-                        <div class="book-name">{{book.AUTHOR}}</div>
-                        <div class="book-genre">{{book.GENRE}}</div>
+                        <div class="book-autor">{{book.AUTHOR}}</div>
+                        <div class="book-genre"><span>{{book.GENRE}}</span></div>
                         <div class="book-rating">
-                            <span class="rating-star" v-for="number in 5">* {{book.RATING}}</span>  <!-- См. https://ru.vuejs.org/v2/guide/migration.html#%D0%94%D0%B8%D0%B0%D0%BF%D0%B0%D0%B7%D0%BE%D0%BD-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B9-%D0%B2-v-for-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%BE -->              
+                            <span class="rating-star" v-for="number in 5">*</span>  <!-- См. https://ru.vuejs.org/v2/guide/migration.html#%D0%94%D0%B8%D0%B0%D0%BF%D0%B0%D0%B7%D0%BE%D0%BD-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B9-%D0%B2-v-for-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%BE -->              
                         </div>
-                        <div class="book-type">{{book.TYPE}}</div>
+                        <div class="book-type"><span>{{book.TYPE}}</span></div>
                         <div class="book-date">{{book.DARE}}</div>
-                        <router-link :to="{name: 'book', params:{id: book.ID} }">Подробнее</router-link>
+                        <router-link :to="{name: 'book', params:{id: book.ID} }" class="book-link">Подробнее</router-link>
                 </div>
             </div>
         </div>
@@ -43,9 +43,49 @@
                 errorMsg: '',
                 endpoint: 'https://a98b1f23-6c84-4dfa-b054-b59188510552.mock.pstmn.io/booksList',
                 books: [],
-                checkedCategory: [],
+                checkedCategories: [],
+                checkedTypes: [],
                 FindCondition: ''
             }
+        },
+        computed: {
+            filteredBooks: function () {
+                let self = this;
+                let FC = self.FindCondition.toLowerCase();
+                if (!self.books)
+                    return [];
+                if ( (!self.FindCondition) && (self.checkedTypes.length == 0) &&(self.checkedCategories.length == 0) )
+                    return self.books; // Если нет никаких фильтров
+                return self.books.filter(function (book) {
+//                    console.log('book: ');
+//                    console.log(book.NAME);
+//                    console.log(book.GENRE);
+                    book.NAME = book.NAME ? book.NAME : '';
+                    book.GENRE = book.GENRE ? book.GENRE : '';
+                    book.AUTHOR = book.AUTHOR ? book.AUTHOR : '';
+                    book.TYPE = book.TYPE ? book.TYPE : '';
+                    if ( ((book.NAME.toLowerCase().indexOf(FC) + 1) 
+                            || (book.AUTHOR.toLowerCase().indexOf(FC) + 1) 
+                            || (book.GENRE.toLowerCase().indexOf(FC) + 1) 
+                            || (book.TYPE.toLowerCase().indexOf(FC) + 1)) 
+                            && (( self.checkedCategories.includes(book.GENRE) ) || (self.checkedCategories.length == 0))
+                            && (( self.checkedTypes.includes(book.TYPE) )|| (self.checkedTypes.length == 0) ) ) {
+                        return true;
+                    }
+                    return false;
+                });
+            }
+        },
+        created: function () {
+            this.getAllbooks();
+            //Добавляем event listeners
+//            eventHub.$on('filter-cat-done', this.filterCat);
+//            eventHub.$on('filter-types-done', this.filterTypes);
+        },
+        beforeDestroy: function () {
+            //Удаляем event listeners
+//            eventHub.$off('filter-cat-done', this.filterCat); 
+//            eventHub.$off('filter-types-done', this.filterTypes);
         },
         methods: {
             getAllbooks: function () {
@@ -63,64 +103,22 @@
                 });
             },
             filterToggle() {
-                return this.filterShow = !this.filterShow;
-            }
-        },
-        computed: {
-            filteredBooks: function () {
-                let self = this;
-                let FC = self.FindCondition.toLowerCase();
-                if (!self.books)
-                    return [];
-                if (!self.FindCondition)
-                    return self.books;
-                return self.books.filter(function (book) {
-//                    console.log('book: ');
-//                    console.log(book.NAME);
-//                    console.log(book.GENRE);
-                    book.NAME = book.NAME ? book.NAME : '';
-                    book.GENRE = book.GENRE ? book.GENRE : '';
-                    book.AUTHOR = book.AUTHOR ? book.AUTHOR : '';
-                    book.TYPE = book.TYPE ? book.TYPE : '';
-                    if ((book.NAME.toLowerCase().indexOf(FC) + 1) || (book.AUTHOR.toLowerCase().indexOf(FC) + 1) ||
-                            (book.GENRE.toLowerCase().indexOf(FC) + 1) || (book.TYPE.toLowerCase().indexOf(FC) + 1)) {
-                        return true;
-                    }
-                    return false;
-                });
-            },
-            categories: function () {
-                //Создать массив cj cgbcrjv rfntujhbq categories[0] {id: 0, label}
-                let vcat = [];
-                let uniq = false;
-
-                /* this.filteredBooks.forEach(function (item, i) { */
-                // по идее тут должен быть массив меток    
-                for (let i = 0; i < this.filteredBooks.length; i++) {
-                    /* if (item.GENRE){ //Если такой записи еще нет в массиве еще добавить условие выбора категории checkedCategory */
-                    if (this.filteredBooks[i].GENRE) {
-                        uniq = true; // считаем, что значение уникально
-                        for (let z = 0; z < vcat.length; z++) { // ищем похожие ключи
-                            if (this.filteredBooks[i].GENRE.trim() == vcat[z].trim()) {
-                                // уже в списке - не уникально
-                                uniq = false;
-                            }
-                        }
-                        if (uniq)
-                            vcat.push(this.filteredBooks[i].GENRE.trim());
-                        /* if (item.GENRE){ //Если такой записи еще нет в массиве еще добавить условие выбора категории checkedCategory
-                         cat[item.GENRE.trim()] = i; */
-                    } //добавляем в массив
-                    // console.log('item.GENRE');
-                    // console.log(item.GENRE);
+                if (this.filterShow) {
+                // Обнуляем фильтр каким-то непостижимым способом это СБРасывает выбранные фильтры!
+                this.checkedCategories = [];
+                this.checkedTypes = [];
                 }
-                console.log('vcat');
-                console.log(vcat);
-                return vcat;
+                return this.filterShow = !this.filterShow;
+            },  
+            filterCat(checkedCategories){
+                // console.log('получил Categories'); console.log(checkedCategories);
+                this.checkedCategories = checkedCategories;
+                return this.filteredBooks;
+            },
+            filterTypes(checkedTypes){
+                // console.log('получил types'); console.log(checkedTypes);
+                this.checkedTypes = checkedTypes;
             }
-        },
-        created: function () {
-            this.getAllbooks();
         },
         components:{
             FilterBox: FilterBox,
@@ -129,18 +127,89 @@
     }
 </script>
 <style scoped>
+    /* карточка книги */
+    .flex-container{
+        display: flex;
+        width: 80%;
+        margin: 10px auto;
+        flex-flow: row wrap; /* направление и переносы */
+        justify-content: space-between; /* выравнивание по осн. оси */
+        align-content: flex-start; /* вертикальное выравнивание в контейнере */
+        align-items: stretch; /* выравнивание в строках */
+    }
+    .library-item{
+        flex: 1 1 300px; /* {grow shrink basis}  */
+        margin: 10px;
+        padding: 15px;
+        box-shadow: 0px 2px 8px #c4bbce52;
+        border-radius: 3px;
+    }
+    .library-item:hover{
+        box-shadow: 0px 2px 8px #c4bbce;
+    }    
+    
     /*
     * Стиль информации о книгах
     */
     
-    .book-genre{
-            font-style: italic;
-            
-    }
     .library-item img {
         max-width: 50%;
-    }   
-  
+        margin: 10px 15px 15px;
+    } 
+    .book-id {
+        font-size: 12px;
+        color: #ccc;
+        margin: 0 15px 7px;
+    }
+    .book-name {
+        margin: 0 auto 15px;
+        font-weight: 600;
+        max-width: 80%;
+        text-align: center;
+        color: #5a6876;
+    } 
+    .book-autor {
+        margin: 15px auto;
+        text-align: center;
+    }
+    .book-genre span,
+    .book-type span{
+        font-size: 14px;
+        font-style: italic;
+       /* color: #284c5c; */
+        padding: 3px 20px;
+        border-radius: 50px;
+        margin: 10px 3px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .book-genre span {
+/*        background-color: #d9f5f0; */
+        border: 1px dashed #03bd98;
+        color: #03bd98;
+    }
+    .book-type span{
+        /* background-color: #f3e9f3; */
+        border: 1px dashed #ae6ab0;
+        color: #ae6ab0;
+    }
+    .rating-star{
+            font-size: 18px;
+            font-weight: 600;
+            color: gold;
+    }
+    .book-link {
+        color: #fff;
+        margin: 15px 15px 20px;
+        display: inline-block;
+        background-color: #03bd98;
+        padding: 8px 25px;
+        border-radius: 50px;
+        /* background-color: #4271b9; */
+        /* width: 70%; */
+        text-decoration: none;
+    }    
+    
     *{
         box-sizing: border-box;
     }
@@ -171,22 +240,6 @@
     *:focus {
         outline: none;
         box-shadow: none;
-    }
-
-    .flex-container{
-        display: flex;
-        width: 80%;
-        margin: 10px auto;
-        flex-flow: row wrap; /* направление и переносы */
-        justify-content: space-between; /* выравнивание по осн. оси */
-        align-content: flex-start; /* вертикальное выравнивание в контейнере */
-        align-items: stretch; /* выравнивание в строках */
-    }
-    .library-item{
-        flex: 1 1 300px; /* {grow shrink basis}  */
-        margin: 10px;
-        padding: 15px;
-
     }
 
     /*
