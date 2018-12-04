@@ -19,13 +19,13 @@
                     <img :src="book.PICTURE" :alt="book.TEXT">
                         <div class="book-id ">{{book.ID}}</div>
                         <div class="book-name">{{book.NAME}}</div>
-                        <div class="book-autor">{{book.AUTHOR}}</div>
-                        <div class="book-genre"><span>{{book.GENRE}}</span></div>
+                        <div class="book-autor">{{book.AUTHOR?book.AUTHOR:''}}</div>
+                        <div class="book-genre" v-if="book.GENRE"><span>{{book.GENRE}}</span></div>
                         <div class="book-rating">
                             <span class="rating-star" v-for="number in 5">*</span>  <!-- См. https://ru.vuejs.org/v2/guide/migration.html#%D0%94%D0%B8%D0%B0%D0%BF%D0%B0%D0%B7%D0%BE%D0%BD-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B9-%D0%B2-v-for-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%BE -->              
                         </div>
-                        <div class="book-type"><span>{{book.TYPE}}</span></div>
-                        <div class="book-date">{{book.DARE}}</div>
+                        <div class="book-type" v-if="book.TYPE"><span>{{book.TYPE}}</span></div>
+                        <!-- <div class="book-date">{{book.DATE}}</div> -->
                         <router-link :to="{name: 'book', params:{id: book.ID} }" class="book-link">Подробнее</router-link>
                 </div>
             </div>

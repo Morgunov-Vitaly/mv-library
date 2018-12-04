@@ -2,11 +2,11 @@
     <div class="filter-container">
         <p class="catHeader">Рубрики:</p>
         <label class="mv-cat-checkbox" v-for="(key, value, index) in categories">
-            <input type="checkbox" v-bind:id="'mv-mv-cat-checkbox-' + index" v-model="checkedCategories" v-bind:value="value" @change="filterCatDone"><span>{{ value }} <i class="mv-qty">{{key}}</i></span>
+            <input type="checkbox" v-bind:id="'mv-mv-cat-checkbox-' + index" v-model="checkedCategories" v-bind:value="value" @change="filterCatDone"><span>{{ value?value:'' }} <i class="mv-qty">{{key}}</i></span>
         </label>
         <p class="typeHeader">Тип носителя:</p>
         <label class="mv-type-checkbox" v-for="(key,value,index) in bookTypes">
-            <input type="checkbox" v-bind:id="'mv-mv-type-checkbox-' + index" v-model="checkedTypes" v-bind:value="value" @change="filterTypesDone"><span>{{ value }} <i class="mv-qty">{{key}}</i></span>
+            <input type="checkbox" v-bind:id="'mv-mv-type-checkbox-' + index" v-model="checkedTypes" v-bind:value="value" @change="filterTypesDone"><span>{{ value?value:'' }} <i class="mv-qty">{{key}}</i></span>
         </label>
     </div>
 </template>
