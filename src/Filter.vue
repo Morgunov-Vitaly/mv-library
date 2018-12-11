@@ -23,11 +23,43 @@
             }
         },
         methods: {            
-            unic: function(arr, key){ /* Находит уникальные свойства и подсчитывает кол-во их повторений */
-                var result = {};
-                arr.forEach(function(a){
-                result[a[key]] = result[a[key]] + 1 || 1;
+            unic: function(arr, key){ /*  Вспомогательная функция Находит уникальные свойства и подсчитывает кол-во их повторений */
+                let result = {}; 
+                /*  создадим объект со свойствами - жанрами вида 
+                    { 
+                        'личностное развитие': 2,
+                        'медицина': 3,
+                        ...
+                      } 
+                */
+                arr.forEach(function(a){ /* Условно a = book[0..n] */
+                    /* условно book[0].GENRE = ["Личностное развитие", "Медицина"]  перебираем массив и заполняем result */
+                    a[key].forEach(function(b){ /* условно b = book[0].GENRE[0] = "Личностное развитие" */
+                        result[b.toLowerCase()] = result[b.toLowerCase()] + 1 || 1;  /* условно { "личностное развитие" : 2} */
+                    });
                 });
+                console.log('unic genre');
+                return result;
+            },
+            unic_type: function(arr, key){ /*  Вспомогательная функция Находит уникальные свойства тип аносителя и подсчитывает кол-во их повторений */
+                let result = {}; 
+                /*  создадим объект со свойствами - жанрами вида 
+                    { 
+                        'электронная': 2,
+                        'бумажная': 3,
+                        ...
+                      } 
+                */
+                arr.forEach(function(a){ /* Условно a = book[0..n] */
+                    /* условно book[0].TYPE = {
+                            "1099": "Бумажная",
+                            "1100": "Электронная
+                            }  перебираем объект и заполняем result */
+                    for (let b in a[key]){ /* условно b = "1099","1100" и т.д. - ключи */
+                        result[a[key][b].toLowerCase()] = result[a[key][b].toLowerCase()] + 1 || 1;  /* условно { "бумажная" : 2} */
+                    };
+                });
+                console.log('unic type');
                 return result;
             },
             filterCatDone: function() {
@@ -44,12 +76,12 @@
         computed: {
             categories: function () {
                 //Создать массив со списком категорий categories[ {label: qty} ]  рубрика: количество книг}
-                
+                //Алгориитм сначала создать массив со всеми ключами, а потом отфильтровать только уникальные д.б. быстрее но без подсчета кол-ва
                 return this.unic(this.filteredBooks, 'GENRE');
             },
             bookTypes(){
                 //Создать массив со списком типов носителей книг bookTypes[ {label: qty} ]  рубрика: количество книг}
-                return this.unic(this.filteredBooks, 'TYPE');
+                return this.unic_type(this.filteredBooks, 'TYPE');
             }
         }
     }

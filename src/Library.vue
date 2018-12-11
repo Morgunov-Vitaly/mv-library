@@ -17,14 +17,17 @@
             <div class="flex-container">
                 <div class="library-item" v-for="book in filteredBooks">
                     <img :src="book.PICTURE" :alt="book.TEXT">
-                        <div class="book-rating">
-                            <span class="rating-star" v-for="number in 5">*</span>  <!-- См. https://ru.vuejs.org/v2/guide/migration.html#%D0%94%D0%B8%D0%B0%D0%BF%D0%B0%D0%B7%D0%BE%D0%BD-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D0%B9-%D0%B2-v-for-%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%BE -->              
-                        </div>
+                        <book-rating v-bind:rating="book.RATING*20" v-bind:maxStars="5"></book-rating>                        
+                         <div class="book-rating">Рейтинг: {{book.RATING}}</div>
                         <!-- <div class="book-id ">{{book.ID}}</div> -->
                         <div class="book-name">{{book.NAME}}</div>
                         <div class="book-autor">{{book.AUTHOR?book.AUTHOR:''}}</div>
-                        <div class="book-genre" v-if="book.GENRE"><span>{{book.GENRE}}</span></div>
-                        <div class="book-type" v-if="book.TYPE"><span>{{book.TYPE}}</span></div>
+                        <div class="book-genre" v-if="book.GENRE">
+                            <span v-for="genre in book.GENRE">{{genre}}</span>
+                        </div>
+                        <div class="book-type" v-if="book.TYPE">
+                            <span v-for="type in book.TYPE">{{type}}</span>
+                        </div>
                         <!-- <div class="book-date">{{book.DATE}}</div> -->
                         <router-link :to="{name: 'book', params:{id: book.ID} }" class="book-link">Подробнее</router-link>
                 </div>
@@ -35,13 +38,14 @@
 
 <script>
     import FilterBox from './Filter.vue';
+    import BookRating from './Rating.vue';
     export default {
         data() {
             return {
                 msg: 'Это компонент библиотеки',
                 filterShow: false,
                 errorMsg: '',
-                endpoint: 'https://a98b1f23-6c84-4dfa-b054-b59188510552.mock.pstmn.io/booksList',
+                endpoint: 'https://bb4e7545-4dfc-4090-88ca-1b889ea65ea5.mock.pstmn.io/BookList', /* 'https://portal.mc21.ru/srv/bitrix/library/BooksList', 'https://a98b1f23-6c84-4dfa-b054-b59188510552.mock.pstmn.io/booksList', */
                 books: [],
                 checkedCategories: [],
                 checkedTypes: [],
@@ -60,16 +64,23 @@
 //                    console.log('book: ');
 //                    console.log(book.NAME);
 //                    console.log(book.GENRE);
+                    let isGenreFind = 1; /* присутствует ли у данной книги набранный в строке поиска жанр book.GENRE.toLowerCase().indexOf(FC) + 1 */
+                    let isTypeFind = 1; /* присутствует ли у данной книги набранный в строке поиска тип носителя book.TYPE.toLowerCase().indexOf(FC) + 1) */
+                    let isGenreChecked = 1; /* присутствует ли у данной книги отмеченный в фильтре жанр book.GENRE.toLowerCase().indexOf(FC) + 1 */
+                    let isTypeChecked = 1; /* присутствует ли у данной книги отмеченный в фильтре тип носителя book.TYPE.toLowerCase().indexOf(FC) + 1) */
                     book.NAME = book.NAME ? book.NAME : '';
                     book.GENRE = book.GENRE ? book.GENRE : '';
                     book.AUTHOR = book.AUTHOR ? book.AUTHOR : '';
                     book.TYPE = book.TYPE ? book.TYPE : '';
-                    if ( ((book.NAME.toLowerCase().indexOf(FC) + 1) 
+                    /* if ( ((book.NAME.toLowerCase().indexOf(FC) + 1) 
                             || (book.AUTHOR.toLowerCase().indexOf(FC) + 1) 
-                            || (book.GENRE.toLowerCase().indexOf(FC) + 1) 
-                            || (book.TYPE.toLowerCase().indexOf(FC) + 1)) 
-                            && (( self.checkedCategories.includes(book.GENRE) ) || (self.checkedCategories.length == 0))
-                            && (( self.checkedTypes.includes(book.TYPE) )|| (self.checkedTypes.length == 0) ) ) {
+                            || (isGenreFind) 
+                            || (isTypeFind))
+                            && (( isGenreChecked ) || (self.checkedCategories.length == 0))
+                            && (( isTypeChecked )|| (self.checkedTypes.length == 0) ) ) { */
+                      if ((book.NAME.toLowerCase().indexOf(FC) + 1) 
+                            || (book.AUTHOR.toLowerCase().indexOf(FC) + 1) 
+                            ){
                         return true;
                     }
                     return false;
@@ -122,6 +133,7 @@
         },
         components:{
             FilterBox: FilterBox,
+            BookRating: BookRating
         }
                 
     }
@@ -130,7 +142,7 @@
     /* карточка книги */
     .flex-container{
         display: flex;
-        width: 80%;
+        width: 100%;
         margin: 10px auto;
         flex-flow: row wrap; /* направление и переносы */
         justify-content: space-between; /* выравнивание по осн. оси */
@@ -138,12 +150,13 @@
         align-items: stretch; /* выравнивание в строках */
     }
     .library-item{
-        flex: 1 1 300px; /* {grow shrink basis}  */
+        flex: 1 1 300px; /* {grow shrink basis}  */ 
         max-width: 400px;
         margin: 10px;
         padding: 15px;
         box-shadow: 0px 2px 8px #c4bbce52;
         border-radius: 3px;
+        text-align: center;
     }
     .library-item:hover{
         box-shadow: 0px 2px 8px #c4bbce;
@@ -180,9 +193,9 @@
         font-size: 14px;
         font-style: italic;
        /* color: #284c5c; */
-        padding: 3px 20px;
+        padding: 3px 10px;
         border-radius: 50px;
-        margin: 10px 3px;
+        margin: 5px 3px;
         display: inline-block;
         vertical-align: middle;
     }
@@ -196,11 +209,11 @@
         border: 1px dashed #ae6ab0;
         color: #ae6ab0;
     }
-    .rating-star{
+/*    .rating-star{
             font-size: 18px;
             font-weight: 600;
             color: gold;
-    }
+    }*/
     .book-link {
         color: #fff;
         margin: 15px 15px 20px;
@@ -227,10 +240,13 @@
     }
 
     .search-line-container input[type="text"] {
-        height: 405x;        
+        height: 45px;        
         line-height: 45px;
-        border: none;
-        background-color: #F5F5F5;
+/*        border: none;
+        background-color: #F5F5F5; */
+        box-shadow: none;
+        background-color: #fff;
+        border: 2px solid #35c486;        
         border-radius: 50px;
         width: 100%;
         padding: 0 30px;
@@ -261,23 +277,27 @@
     span.filter-open{
         position: absolute;
         display: inline-block;
-        background-color: whitesmoke;
         right: 15px;
         top: 0;
         bottom: 0; 
-        padding: 0px 5px;
-        border: none;
+        text-align: center;
+/*        padding: 0px 5px;
+        background-color: whitesmoke;
+        border: none; */
+        background-color: #fff;
+        border: 2px solid #35c486;
         border-radius: 50px;
         height: 45px;
         width: 45px;
         line-height: 50px;
         cursor: pointer;
+        box-sizing: border-box;
 
     }
     .filter-open svg{
         color: #ccc;
         width: 19px;
-        height: 45px;
+        height: 42px;
     }
 
 
