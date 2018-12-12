@@ -38,7 +38,6 @@
                         result[b.toLowerCase()] = result[b.toLowerCase()] + 1 || 1;  /* условно { "личностное развитие" : 2} */
                     });
                 });
-                console.log('unic genre');
                 return result;
             },
             unic_type: function(arr, key){ /*  Вспомогательная функция Находит уникальные свойства тип аносителя и подсчитывает кол-во их повторений */
@@ -59,9 +58,8 @@
                         result[a[key][b].toLowerCase()] = result[a[key][b].toLowerCase()] + 1 || 1;  /* условно { "бумажная" : 2} */
                     };
                 });
-                console.log('unic type');
                 return result;
-            },
+            },          
             filterCatDone: function() {
                 // генерируем событие 'filter-cat-done' и передаём массив выбранных категорий
                // console.log('checkedCategories'); console.log(this.checkedCategories);
@@ -105,7 +103,8 @@
     label.mv-cat-checkbox span{
         background-color: #fff;
         color: #17ad8f;
-        border: 1px dashed #03bd98;
+        /* border: 1px dashed #03bd98; */
+        border: 2px solid #03bd98;
 /*        background-color: #ccc;
         border: none;
         color: #fff;*/
@@ -123,7 +122,8 @@
     label.mv-type-checkbox span{
         background-color: #fff;
         color: #ae6ab0;;
-        border: 1px dashed #ae6ab0;     
+/*        border: 1px dashed #ae6ab0;     */
+        border: 2px solid #ae6ab0;  
     }
     .mv-type-checkbox input:checked + span { /* выделенная категория */
         background-color: #ae6ab0;

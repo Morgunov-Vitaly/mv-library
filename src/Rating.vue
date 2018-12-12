@@ -44,7 +44,7 @@
                     } else if (xz <= 0.33) {
                         st.push('fa-star off-star');                        
                     } else { // Звездочка вЫключена
-                        st.push('fa-star-half-o');
+                        st.push('fa-star-half');
                     }
 
                 }
@@ -64,9 +64,11 @@
         color:gold;
     }
     .fa-star.off-star{
-        color: #ccc;
+        color: #eee;
     }
+    
+    .fa-star-half,
     .fa-star-half-o { /* fa-star-half */
-        color: lemonchiffon;
+        color: gold;
     }    
 </style>
