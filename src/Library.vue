@@ -17,23 +17,25 @@
             </transition>
             <div class="flex-container">
                 <div class="library-item" v-for="book in filteredBooks">
+                    <router-link :to="{name: 'book', params:{id: book.ID} }">
                     <img :src="book.PICTURE" :alt="book.TEXT">
-                        <book-rating v-bind:rating="book.RATING*20" v-bind:maxStars="5"></book-rating>                        
-                        <!-- <div class="book-id ">{{book.ID}}</div> -->
-                        <div class="book-name">{{book.NAME}}</div>
-                        <div class="book-autor">{{book.AUTHOR?book.AUTHOR:''}}</div>
-                        <p v-if="book.BOOKED" class="mv_booked">
-                            <i class="fas fa-book-reader" title="На бумажном носителе временно недоступна"></i>&nbsp;
-                            <i class="far fa-clock" title="На бумажном носителе временно недоступна"></i>
-                        </p>
-                        <div class="book-genre" v-if="book.GENRE">
-                            <span v-for="genre in book.GENRE">{{genre}}</span>
-                        </div>
-                        <div class="book-type" v-if="book.TYPE">
-                            <span v-for="type in book.TYPE">{{type}}</span>
-                        </div>
-                        <!-- <div class="book-date">{{book.DATE}}</div> -->
-                        <router-link :to="{name: 'book', params:{id: book.ID} }" class="book-link">Подробнее...</router-link>
+                    </router-link>
+                    <book-rating v-bind:rating="book.RATING*20" v-bind:maxStars="5"></book-rating>                        
+                    <!-- <div class="book-id ">{{book.ID}}</div> -->
+                    <div class="book-name">{{book.NAME}}</div>
+                    <div class="book-autor">{{book.AUTHOR?book.AUTHOR:''}}</div>
+                    <p v-if="book.BOOKED" class="mv_booked">
+                        <i class="fas fa-book-reader" title="На бумажном носителе временно недоступна"></i>&nbsp;
+                        <i class="far fa-clock" title="На бумажном носителе временно недоступна"></i>
+                    </p>
+                    <div class="book-genre" v-if="book.GENRE">
+                        <span v-for="genre in book.GENRE">{{genre}}</span>
+                    </div>
+                    <div class="book-type" v-if="book.TYPE">
+                        <span v-for="type in book.TYPE">{{type}}</span>
+                    </div>
+                    <!-- <div class="book-date">{{book.DATE}}</div> -->
+                    <router-link :to="{name: 'book', params:{id: book.ID} }" class="book-link">Подробнее...</router-link>
                 </div>
             </div>
         </div>
@@ -49,7 +51,7 @@
                 msg: 'Это компонент библиотеки',
                 filterShow: false,
                 errorMsg: '',
-                endpoint: 'https://bb4e7545-4dfc-4090-88ca-1b889ea65ea5.mock.pstmn.io/BookList', /* 'https://portal.mc21.ru/srv/bitrix/library/BooksList', 'https://a98b1f23-6c84-4dfa-b054-b59188510552.mock.pstmn.io/booksList', */
+                endpoint: 'https://portal.mc21.ru/srv/bitrix/library/BooksList', /* 'https://bb4e7545-4dfc-4090-88ca-1b889ea65ea5.mock.pstmn.io/BookList' 'https://portal.mc21.ru/srv/bitrix/library/BooksList' */
                 books: [],
                 checkedCategories: [],
                 checkedTypes: [],
@@ -242,7 +244,7 @@
     }
     .book-genre span,
     .book-type span{
-        font-size: 14px;
+        font-size: 12px;
         font-style: italic;
        /* color: #284c5c; */
         padding: 3px 10px;
@@ -290,12 +292,12 @@
     }
     .search-line-container,
     .filter-container{
-        width: 80%;
-        margin: 45px auto;
-        padding-right: 65px;
+        width: 100%;
+        margin: 45px auto;        
     }
     .search-line-container {        
         position: relative;
+        padding-right: 65px;
     }
 
     .search-line-container input[type="text"] {
@@ -309,6 +311,7 @@
         border-radius: 50px;
         width: 100%;
         padding: 0 30px;
+        padding-right: 65px;
         font-size: 16px;        
     }    
     ::-webkit-input-placeholder {

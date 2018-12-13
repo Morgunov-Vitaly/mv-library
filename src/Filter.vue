@@ -153,9 +153,8 @@
         box-sizing: border-box;
     }
     .filter-container{
-        width: 80%;
-        margin: 45px auto;
-        padding-right: 65px;
+        width: 100%;
+        margin: 45px auto;        
     }
     *:active,
     *:focus {
