@@ -3,10 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/00%20Git/mv-library/src/Library.vue</file>
-            <file>file:/D:/00%20Git/mv-library/src/App.vue</file>
-            <file>file:/D:/00%20Git/mv-library/src/Filter.vue</file>
-            <file>file:/D:/00%20Git/mv-library/src/main.js</file>
+            <file>file:/D:/Git/mv-library/src/Rating.vue</file>
+            <file>file:/D:/Git/mv-library/src/App.vue</file>
+            <file>file:/D:/Git/mv-library/src/Library.vue</file>
+            <file>file:/D:/Git/mv-library/src/Book.vue</file>
+            <file>file:/D:/Git/mv-library/src/Filter.vue</file>
         </group>
     </open-files>
 </project-private>
