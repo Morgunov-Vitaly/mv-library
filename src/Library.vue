@@ -12,7 +12,7 @@
             </div>
             <transition name="slide-up">
                 <div class="filter-container" v-if="filterShow">
-                    <filter-box v-bind:filtered-books="filteredBooks" @filter-types-done="filterTypes" @filter-cat-done="filterCat"></filter-box>
+                    <filter-box v-bind:filtered-books="filteredBooks" @filter-types-done="filterTypes" @filter-cat-done="filterCat" @sortBooksDone="sortBooks"></filter-box>
                 </div>                
             </transition>
             <div class="flex-container">
@@ -22,6 +22,7 @@
                     </router-link>
                     <book-rating v-bind:rating="book.RATING*20" v-bind:maxStars="5"></book-rating>                        
                     <!-- <div class="book-id ">{{book.ID}}</div> -->
+                    <div class="book-id ">{{book.DATE}}</div>
                     <div class="book-name">{{book.NAME}}</div>
                     <div class="book-autor">{{book.AUTHOR?book.AUTHOR:''}}</div>
                     <p v-if="book.BOOKED" class="mv_booked">
@@ -42,7 +43,7 @@
     </div> 
 </template>
 
-<script>
+<script>    
     import FilterBox from './Filter.vue';
     import BookRating from './Rating.vue';
     export default {
@@ -51,10 +52,11 @@
                 msg: 'Это компонент библиотеки',
                 filterShow: false,
                 errorMsg: '',
-                endpoint: 'https://portal.mc21.ru/srv/bitrix/library/BooksList', /* 'https://bb4e7545-4dfc-4090-88ca-1b889ea65ea5.mock.pstmn.io/BookList' 'https://portal.mc21.ru/srv/bitrix/library/BooksList' */
+                endpoint: 'https://bb4e7545-4dfc-4090-88ca-1b889ea65ea5.mock.pstmn.io/BookList',/* 'https://portal.mc21.ru/srv/bitrix/library/BooksList',  'https://portal.mc21.ru/srv/bitrix/library/BooksList' */
                 books: [],
                 checkedCategories: [],
                 checkedTypes: [],
+                checkedSort: '',
                 FindCondition: ''
             }
         },
@@ -81,6 +83,7 @@
                 // Обнуляем фильтр каким-то непостижимым способом это СБРасывает выбранные фильтры!
                 this.checkedCategories = [];
                 this.checkedTypes = [];
+                this.checkedSort = 'newfirst';
                 }
                 return this.filterShow = !this.filterShow;
             },  
@@ -93,7 +96,11 @@
                 // console.log('получил types'); console.log(checkedTypes);
                 this.checkedTypes = checkedTypes;
             },
-            isGenreChecked(arrF, arrB){ /* присутствует ли в arrF (опции фильтра) элементы arrB (опции книги) вариант ИЛИ для варианта И - true только если все выбранные рубрики указаны в книге  */
+            sortBooks(checkedSort){
+                // console.log('получил checkedSort'); console.log(checkedSort);
+                this.checkedSort = checkedSort;                          
+            },            
+            isGenreChecked(arrF, arrB){ /* присутствует ли в arrF (опции фильтра) элементы arrB (опции книги) вариант И - true только если все выбранные рубрики указаны в книге  */
                             let mv_has = true; /* условие для ИЛИ false; */
                            /* let arrBstr = arrB.join('~').toLowerCase(); */ /* превращаем массив в строку и затем переводим в нижний регистр */
                             let arrBarr = arrB.join('~').toLowerCase().split('~'); /* превращаем обратно строку в массив */
@@ -111,7 +118,7 @@
                             }
                             return mv_has;
                     },
-            isTypeChecked(arrF, mv_obj){ /* присутствует ли в arr1 элементы arr2 */
+            isTypeChecked(arrF, mv_obj){ /* присутствует ли в arrF элементы объекта mv_obj */
                             let mv_has = true; /* условие для ИЛИ false; */
                             let arrB ='';
                             /* создадим строку-массив */
@@ -134,8 +141,8 @@
                 let FC = self.FindCondition.toLowerCase(); /* строка поиска в нижнем регистре */
                 if (!self.books)
                     return [];
-                if ( (!self.FindCondition) && (self.checkedTypes.length == 0) &&(self.checkedCategories.length == 0) )
-                    return self.books; // Если нет никаких фильтров
+                if ( (!self.FindCondition) && (self.checkedTypes.length == 0) &&(self.checkedCategories.length == 0)&&(self.checkedSort == '') )
+                    return self.books; // Если нет никаких фильтров и сортировка по умолчанию
                 return self.books.filter(function (book) { /* перебираем исходный массив книг и смотрим по каждой книге
                                                              условно book ={ 'ID': 0001, 'GANRE':[], 'TYPE':{'001':'электронная', '002':'бумажная'} } */
 //                    console.log('book: ');
@@ -166,19 +173,81 @@
                         return true;
                     }
                     return false;
+                }).sort(function(a, b){
+                    /* Sort */      
+                    /* newfirst, oldfirst, namea-z, namez-a, authora-z, authorz-a */
+                    if (self.checkedSort == 'newfirst'){
+                    // console.log('сортируем newfirst');
+                        /* В исходнике дата в формате: "07.12.2018 17:48:30" надо преобразовать в стандартный тип YYYY-MM-DDTHH:mm:ss.sssZ*/
+                        let fd = new Date(a.DATE.replace(/(\d+).(\d+).(\d+) (\d+):(\d+):(\d+)/, '$3-$2-$1T$4:$5:$6.000Z'));
+                        let sd = new Date(b.DATE.replace(/(\d+).(\d+).(\d+) (\d+):(\d+):(\d+)/, '$3-$2-$1T$4:$5:$6.000Z'));
+                        if ( fd > sd ) {
+                         return -1;
+                       }
+                       if (fd < sd) {
+                         return 1;
+                       }
+                       // a должно быть равным b
+                        return 0;
+                    } else if (self.checkedSort == 'oldfirst'){
+                       //console.log('сортируем oldfirst');
+                           let fd = new Date(a.DATE.replace(/(\d+).(\d+).(\d+) (\d+):(\d+):(\d+)/, '$3-$2-$1T$4:$5:$6.000Z'));
+                           let sd = new Date(b.DATE.replace(/(\d+).(\d+).(\d+) (\d+):(\d+):(\d+)/, '$3-$2-$1T$4:$5:$6.000Z'));                       
+                            if ( fd > sd ) {
+                            return 1;
+                            }
+                            if (fd < sd) {
+                            return -1;
+                            }
+                            // a должно быть равным b
+                            return 0;                 
+                    } else if (self.checkedSort == 'namea-z'){
+                            // console.log('сортируем namea-z');
+                           if ( a.NAME > b.NAME ) {
+                           return 1;
+                           }
+                           if (a.NAME < b.NAME) {
+                           return -1;
+                           }
+                           // a должно быть равным b
+                           return 0;
+                    } else if (self.checkedSort == 'namez-a') {
+                            // console.log('сортируем namez-a');
+                           if (a.NAME > b.NAME) {
+                                   return -1;
+                               }
+                               if (a.NAME < b.NAME) {
+                                   return 1;
+                               }
+                               // a должно быть равным b
+                               return 0;
+                    } else if (self.checkedSort == 'authora-z') {
+                               // console.log('сортируем authora-z');
+                               if (a.AUTHOR > b.AUTHOR) {
+                                   return 1;
+                               }
+                               if (a.AUTHOR < b.AUTHOR) {
+                                   return -1;
+                               }
+                               // a должно быть равным b
+                               return 0;
+                    } else if (self.checkedSort == 'authorz-a') {
+                               // console.log('сортируем authorz-a');
+                               if (a.AUTHOR > b.AUTHOR) {
+                                   return -1;
+                               }
+                               if (a.AUTHOR < b.AUTHOR) {
+                                   return 1;
+                               }
+                               // a должно быть равным b
+                               return 0;
+                    }                    
+                    /* /Sort */
                 });
             }
         },
         created: function () {
             this.getAllbooks();
-            //Добавляем event listeners
-//            eventHub.$on('filter-cat-done', this.filterCat);
-//            eventHub.$on('filter-types-done', this.filterTypes);
-        },
-        beforeDestroy: function () {
-            //Удаляем event listeners
-//            eventHub.$off('filter-cat-done', this.filterCat); 
-//            eventHub.$off('filter-types-done', this.filterTypes);
         },
         components:{
             FilterBox: FilterBox,
