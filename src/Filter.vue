@@ -8,6 +8,8 @@
         <label class="mv-type-checkbox" v-for="(key,value,index) in bookTypes">
             <input type="checkbox" v-bind:id="'mv-mv-type-checkbox-' + index" v-model="checkedTypes" v-bind:value="value" @change="filterTypesDone"><span>{{ value?value:'' }} <i class="mv-qty">{{key}}</i></span>
         </label>
+        <p class="sortHeader">Сортировать:</p>
+            
     </div>
 </template>
 
