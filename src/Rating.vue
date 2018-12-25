@@ -1,5 +1,5 @@
 <template>
-    <div class="rating-container">
+    <div class="rating-container" :title="rating/20">
         <span v-for="star in stars">
             <i class="fa" v-bind:class="star" aria-hidden="true"></i>
         </span>

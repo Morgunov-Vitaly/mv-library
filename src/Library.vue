@@ -22,7 +22,7 @@
                     </router-link>
                     <book-rating v-bind:rating="book.RATING*20" v-bind:maxStars="5"></book-rating>                        
                     <!-- <div class="book-id ">{{book.ID}}</div> -->
-                    <div class="book-id ">{{book.DATE}}</div>
+                    <!-- <div class="book-id ">{{book.DATE}}</div> -->
                     <div class="book-name">{{book.NAME}}</div>
                     <div class="book-autor">{{book.AUTHOR?book.AUTHOR:''}}</div>
                     <p v-if="book.BOOKED" class="mv_booked">
@@ -52,7 +52,7 @@
                 msg: 'Это компонент библиотеки',
                 filterShow: false,
                 errorMsg: '',
-                endpoint: 'https://bb4e7545-4dfc-4090-88ca-1b889ea65ea5.mock.pstmn.io/BookList',/* 'https://portal.mc21.ru/srv/bitrix/library/BooksList',  'https://portal.mc21.ru/srv/bitrix/library/BooksList' */
+                endpoint: 'https://portal.mc21.ru/srv/bitrix/library/BooksList', /* 'https://portal.mc21.ru/srv/bitrix/library/BooksList',  'https://bb4e7545-4dfc-4090-88ca-1b889ea65ea5.mock.pstmn.io/BookList' */
                 books: [],
                 checkedCategories: [],
                 checkedTypes: [],
@@ -175,7 +175,7 @@
                     return false;
                 }).sort(function(a, b){
                     /* Sort */      
-                    /* newfirst, oldfirst, namea-z, namez-a, authora-z, authorz-a */
+                    /* newfirst, oldfirst, namea-z, namez-a, authora-z, authorz-a, by-rating */
                     if (self.checkedSort == 'newfirst'){
                     // console.log('сортируем newfirst');
                         /* В исходнике дата в формате: "07.12.2018 17:48:30" надо преобразовать в стандартный тип YYYY-MM-DDTHH:mm:ss.sssZ*/
@@ -212,36 +212,46 @@
                            // a должно быть равным b
                            return 0;
                     } else if (self.checkedSort == 'namez-a') {
-                            // console.log('сортируем namez-a');
-                           if (a.NAME > b.NAME) {
-                                   return -1;
-                               }
-                               if (a.NAME < b.NAME) {
-                                   return 1;
-                               }
-                               // a должно быть равным b
-                               return 0;
+                        // console.log('сортируем namez-a');
+                       if (a.NAME > b.NAME) {
+                               return -1;
+                           }
+                           if (a.NAME < b.NAME) {
+                               return 1;
+                           }
+                           // a должно быть равным b
+                           return 0;
                     } else if (self.checkedSort == 'authora-z') {
-                               // console.log('сортируем authora-z');
-                               if (a.AUTHOR > b.AUTHOR) {
-                                   return 1;
-                               }
-                               if (a.AUTHOR < b.AUTHOR) {
-                                   return -1;
-                               }
-                               // a должно быть равным b
-                               return 0;
+                            // console.log('сортируем authora-z');
+                            if (a.AUTHOR > b.AUTHOR) {
+                                return 1;
+                            }
+                            if (a.AUTHOR < b.AUTHOR) {
+                                return -1;
+                            }
+                            // a должно быть равным b
+                            return 0;
                     } else if (self.checkedSort == 'authorz-a') {
-                               // console.log('сортируем authorz-a');
-                               if (a.AUTHOR > b.AUTHOR) {
-                                   return -1;
-                               }
-                               if (a.AUTHOR < b.AUTHOR) {
-                                   return 1;
-                               }
-                               // a должно быть равным b
-                               return 0;
-                    }                    
+                            // console.log('сортируем authorz-a');
+                            if (a.AUTHOR > b.AUTHOR) {
+                                return -1;
+                            }
+                            if (a.AUTHOR < b.AUTHOR) {
+                                return 1;
+                            }
+                            // a должно быть равным b
+                            return 0;
+                    } else if (self.checkedSort == 'by-rating'){
+                       //console.log('сортируем oldfirst');
+                            if ( a.RATING > b.RATING ) {
+                            return -1;
+                            }
+                            if (a.RATING < b.RATING) {
+                            return 1;
+                            }
+                            // a должно быть равным b
+                            return 0;                 
+                    }                   
                     /* /Sort */
                 });
             }

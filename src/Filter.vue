@@ -26,6 +26,9 @@
         </label>        
         <label class="mv-books-sort"><input type="radio" name="mv-books-sort" value="authorz-a" @change="sortBooksDone" v-model="checkedSort">
             <span>Автор Я-А</span>
+        </label>
+        <label class="mv-books-sort"><input type="radio" name="mv-books-sort" value="by-rating" @change="sortBooksDone" v-model="checkedSort">
+            <span>По рейтингу</span>
         </label>        
     </div>
 </template>
@@ -80,7 +83,7 @@
             return {
                 checkedCategories: [],
                 checkedTypes: [],
-                checkedSort: '' /* newfirst, oldfirst, namea-z, namez-a, authora-z,authorz-a */
+                checkedSort: '' /* newfirst, oldfirst, namea-z, namez-a, authora-z, authorz-a, by-rating */
             }
         },
         methods: {                     
