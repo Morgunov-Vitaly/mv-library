@@ -128,7 +128,8 @@
         color: #fff;
     }
     .book-cover img{
-        max-width: 70%;
+        max-width: 85%;
+        box-shadow: -20px 18px 20px 0px #0e0e0e1c;
     }
     .mv_booked{
         color: #ff5b62;
