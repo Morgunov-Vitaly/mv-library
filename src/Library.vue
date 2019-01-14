@@ -52,7 +52,7 @@
                 msg: 'Это компонент библиотеки',
                 filterShow: false,
                 errorMsg: '',
-                endpoint: 'https://bb4e7545-4dfc-4090-88ca-1b889ea65ea5.mock.pstmn.io/BookList',/* 'https://portal.mc21.ru/srv/bitrix/library/BooksList',  'https://portal.mc21.ru/srv/bitrix/library/BooksList' */
+                endpoint: 'https://portal.mc21.ru/srv/bitrix/library/BooksList',/* 'https://portal.mc21.ru/srv/bitrix/library/BooksList',  'https://bb4e7545-4dfc-4090-88ca-1b889ea65ea5.mock.pstmn.io/BookList' */
                 books: [],
                 checkedCategories: [],
                 checkedTypes: [],
